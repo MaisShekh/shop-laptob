@@ -1,8 +1,10 @@
 
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:untitled/layout/shop_laptobs_app/cubit/cubit.dart';
 import 'package:untitled/layout/shop_laptobs_app/cubit/states.dart';
 import 'package:untitled/models/shop_app/shop_laptob_models.dart';
@@ -18,89 +20,209 @@ class ShopCartScreen extends StatelessWidget {
       child: BlocConsumer<ShopCubit,ShopStates>(
         listener: (BuildContext context, Object? state) {  },
         builder: (BuildContext context, state) {
-          return Scaffold(
-            body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  children: [
-                    ListView.separated(
-                      itemBuilder: (context, index) => buildItemCart2(ShopCubit.get(context).itemsincart[index],index,context),
-                      separatorBuilder: (context, index) => SizedBox(height: 10,),
-                      itemCount: ShopCubit.get(context).itemsincart.length,
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                    ),
-                    SizedBox(
-                      height: 100,
-                    ),
-                    Row(
+          return currentcart !=null ? Scaffold(
+            body: ConditionalBuilder(
+              condition:state is! getcartload ,
+
+              builder: (BuildContext context) {
+                return SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
                       children: [
-                        Text("Items Count",
-                          style: TextStyle(
-                            color: Colors.grey[400],
-                            fontSize: 16,
+                        ListView.separated(
+                          itemBuilder: (context, index) => buildItemCart2(ShopCubit.get(context).itemsincart[index],index,context),
+                          separatorBuilder: (context, index) => SizedBox(height: 10,),
+                          itemCount: ShopCubit.get(context).itemsincart.length,
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                        ),
+                        SizedBox(
+                          height: 100,
+                        ),
+                        Row(
+                          children: [
+                            Text("Items Count",
+                              style: TextStyle(
+                                color: Colors.grey[400],
+                                fontSize: 16,
+                              ),
+                            ),
+                            Spacer(),
+                            Text("${currentcart!.itemscount}",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          children: [
+                            Text("Total Price",
+                              style: TextStyle(
+                                color: Colors.grey[400],
+                                fontSize: 16,
+                              ),
+                            ),
+                            Spacer(),
+                            Text("${currentcart!.totalprice}",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 40,
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10,
+                          ),
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(onPressed: ()
+                          {},
+                            child: Text("Check Out",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              shape: ContinuousRectangleBorder(borderRadius: BorderRadius.circular(20),),
+                              backgroundColor: Colors.black,
+
+                            ),
                           ),
                         ),
-                        Spacer(),
-                        Text("${currentcart!.itemscount}",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
+
                       ],
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
+                  ),
+                );
+              },
+              fallback: (BuildContext context) {
+                return SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
                       children: [
-                        Text("Total Price",
-                          style: TextStyle(
-                            color: Colors.grey[400],
-                            fontSize: 16,
+                        ListView.separated(
+                          itemBuilder: (context, index) => buildItemCartload(context),
+                          separatorBuilder: (context, index) => SizedBox(height: 10,),
+                          itemCount: 2,
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                        ),
+                        SizedBox(
+                          height: 100,
+                        ),
+                        Row(
+                          children: [
+                            Text("Items Count",
+                              style: TextStyle(
+                                color: Colors.grey[400],
+                                fontSize: 16,
+                              ),
+                            ),
+                            Spacer(),
+                            Shimmer(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.grey[300]!,
+                                  Colors.grey[100]!,
+                                  Colors.grey[300]!
+                                ],
+                                stops: [0.4, 0.5, 0.6],
+                              ),
+                              child: Container(
+                                height: MediaQuery.of(context).size.height * 0.01,
+                                color: Colors.white,
+                                child: Text(
+                                  "                          ",
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          children: [
+                            Text("Total Price",
+                              style: TextStyle(
+                                color: Colors.grey[400],
+                                fontSize: 16,
+                              ),
+                            ),
+                            Spacer(),
+                            Shimmer(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.grey[300]!,
+                                  Colors.grey[100]!,
+                                  Colors.grey[300]!
+                                ],
+                                stops: [0.4, 0.5, 0.6],
+                              ),
+                              child: Container(
+                                height: MediaQuery.of(context).size.height * 0.01,
+                                color: Colors.white,
+                                child: Text(
+                                  "                          ",
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 40,
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10,
+                          ),
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(onPressed: ()
+                          {},
+                            child: Text("Check Out",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              shape: ContinuousRectangleBorder(borderRadius: BorderRadius.circular(20),),
+                              backgroundColor: Colors.black,
+
+                            ),
                           ),
                         ),
-                        Spacer(),
-                        Text("${currentcart!.totalprice}",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
+
                       ],
                     ),
-                    SizedBox(
-                      height: 40,
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 10,
-                      ),
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton(onPressed: ()
-                      {},
-                        child: Text("Check Out",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          shape: ContinuousRectangleBorder(borderRadius: BorderRadius.circular(20),),
-                          backgroundColor: Colors.black,
+                  ),
+                );
+              },
 
-                        ),
-                      ),
-                    ),
-
-                  ],
-                ),
-              ),
             ),
+          )
+          :Scaffold(
+            body:Container(
+              child: Center(
+                child:Text("Something Error")
+              ),
+            )
           );
         },
 
@@ -277,4 +399,133 @@ Widget buildItemCart2(ShopLaptobModel model ,index,context) =>    Container(
   ),
 );
 
+Widget buildItemCartload(context) =>    Container(
+  padding: EdgeInsets.all(10),
+  height: MediaQuery.of(context).size.height * 0.1719,
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(20),
+    color: Colors.white,
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.05),
+        spreadRadius: 4,
+        blurRadius: 5,
+        offset: Offset(
+          2,
+          4,
+        ),
+      ),
+    ],
+  ),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: Shimmer(
+          gradient: LinearGradient(
+            colors: [
+              Colors.grey[300]!,
+              Colors.grey[100]!,
+              Colors.grey[300]!
+            ],
+            stops: [0.4, 0.5, 0.6],),
+          child: Container(
+            margin: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.white,
+            ),
+            height: MediaQuery.of(context).size.height ,
+            width: MediaQuery.of(context).size.width * 0.3,
+          ),
+        ),
+      ),
+      Expanded(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Shimmer(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.grey[300]!,
+                    Colors.grey[100]!,
+                    Colors.grey[300]!
+                  ],
+                  stops: [0.4, 0.5, 0.6],
+                ),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.01,
+                  color: Colors.white,
+                  child: Text(
+                    "                ",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Shimmer(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.grey[300]!,
+                    Colors.grey[100]!,
+                    Colors.grey[300]!
+                  ],
+                  stops: [0.4, 0.5, 0.6],
+                ),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.01,
+                  color: Colors.white,
+                  child: Text(
+                    "                          ",
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height  * 0.02,
+              ),
+              Shimmer(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.grey[300]!,
+                    Colors.grey[100]!,
+                    Colors.grey[300]!
+                  ],
+                  stops: [0.4, 0.5, 0.6],
+                ),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.01,
+                  color: Colors.white,
+                  child: Text(
+                    "                          ",
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(right: 8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              icon:Icon(Icons.delete_outline,
+                size: 28,
+                color: Colors.redAccent,),
+              onPressed: (){},
+            )
+          ],
+        ),
+      )
 
+    ],
+  ),
+);
