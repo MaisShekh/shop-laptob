@@ -321,7 +321,7 @@ class editlap extends StatelessWidget {
                                   lapname: nameController.text,
                                   lapdesc: descreptionController.text,
                                   Ram: ramval,
-                                  price: double.parse(priceController.text),
+                                  price: int.parse(priceController.text),
                                   hardsize: hardval,
                                   brand: brandval,
                                   hardtype: hardtypeval, id: mod.laptobId!, image: mod.image!);
@@ -332,7 +332,7 @@ class editlap extends StatelessWidget {
                                   lapname: nameController.text,
                                   lapdesc: descreptionController.text,
                                   Ram: ramval,
-                                  price: double.parse(priceController.text),
+                                  price: int.parse(priceController.text),
                                   hardsize: hardval,
                                   brand: brandval,
                                   hardtype: hardtypeval);

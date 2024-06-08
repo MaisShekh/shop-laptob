@@ -220,7 +220,7 @@ class alllap extends StatelessWidget {
                                             onTap: () async {
                                               await ShopCubit
                                                   .get(context)
-                                                  .deletebook(
+                                                  .deletelap(
                                                   id: '${model.laptobId}');
                                               Navigator.pop(
                                                   context, ButtonAction.Agree);

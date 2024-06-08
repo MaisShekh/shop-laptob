@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../models/shop_app/shop_cart_models.dart';
 import '../../models/shop_app/shop_laptob_models.dart';
 import '../../models/shop_app/shop_users_models.dart';
 ShopUserModel? userModel ;
@@ -16,6 +17,7 @@ const List<String> Brands = <String>['Apple', 'Asus','Acer','Dell','Lenovo','HP'
 const List<String> Rams = <String>['2 GB', '4 GB','6 GB','8 GB','12 GB','16 GB','24 GB','32 GB'];
 const List<String> Hards = <String>['128 GB', '256 GB','512 GB','1 TB','2 TB'];
 const List<String> HardsType = <String>['HDD', 'SSD'];
+ShopCartModel? currentcart;
 
 Widget buildTasksItem(Map tasks) => Padding(
   padding: const EdgeInsets.all(20.0),

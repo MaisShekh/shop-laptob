@@ -17,6 +17,8 @@ class ShopGetLaptobSuccessState extends ShopStates{}
 
 class ShopGetLaptobErrorState extends ShopStates{}
 
+class ShopAddToCartloadState extends ShopStates{}
+
 class ShopAddToCartSuccessState extends ShopStates{}
 
 class ShopAddToCartErrorState extends ShopStates{}
@@ -97,5 +99,8 @@ class recovererrorstate extends ShopStates{}
 
 
 
-
+///////getcart
+class getcartload extends ShopStates{}
+class getcartsuccess extends ShopStates{}
+class getcarterror extends ShopStates{}
 

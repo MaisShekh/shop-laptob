@@ -88,7 +88,7 @@ class ShopCubit extends Cubit<ShopStates>
       ],
     ),
     AppBar(
-     title:Text("Items In Cart",
+     title:Text("Items In Cart:",
        style: TextStyle(
          fontWeight: FontWeight.bold,
        ),
@@ -122,6 +122,7 @@ class ShopCubit extends Cubit<ShopStates>
         userId: value.user!.uid,
 
       );
+      await createCart();
 
       emit(ShopRegisterSuccessState());
     })
@@ -302,54 +303,10 @@ class ShopCubit extends Cubit<ShopStates>
     });
   }
 
-  List <ShopCartModel> cart=[];
-
-   Future<void> addToCart({required String laptobId}) async
-  {
 
 
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(userId)
-        .collection("cart")
-        .doc(laptobId)
-        .set({})
-        .then((value) {
 
-          emit(ShopAddToCartSuccessState());
 
-    })
-        .catchError((error){
-          emit(ShopAddToCartErrorState());
-    });
-  }
-
-  List<String> laptobId =[];
-  ShopCartModel ? cartModel;
-
-  Future<void> createCart() async
-  {
-    ShopCartModel cartModel =ShopCartModel(
-      cartId: userId,
-      numberOfItem: 0,
-      totalPrice: 0,
-      laptobId: laptobId,
-    );
-
-    FirebaseFirestore.instance
-    .collection('cart')
-    .doc(userId)
-    .set(cartModel.toMap())
-        .then((value) {})
-        .catchError((error){});
-  }
-
- /* Future<void> changePassword ({required String password}) async
-  {
-   await FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-   user.updatePassword(password);
-
-  }*/
 
   void changeBottomNavBar(int index)
   {
@@ -375,7 +332,7 @@ class ShopCubit extends Cubit<ShopStates>
     required String lapname,
     required String lapdesc,
     required String Ram,
-    required double price,
+    required int price,
     required String hardsize,
     required String brand,
     required String hardtype,
@@ -430,7 +387,7 @@ class ShopCubit extends Cubit<ShopStates>
     required String lapname,
     required String lapdesc,
     required String Ram,
-    required double price,
+    required int price,
     required String hardsize,
     required String brand,
     required String hardtype,
@@ -484,7 +441,7 @@ class ShopCubit extends Cubit<ShopStates>
     required String lapname,
     required String lapdesc,
     required String Ram,
-    required double price,
+    required int price,
     required String hardsize,
     required String brand,
     required String hardtype,
@@ -511,7 +468,7 @@ class ShopCubit extends Cubit<ShopStates>
     }).catchError((error){emit(updatelaperrorstate());});
   }
 
-  Future<void> deletebook({
+  Future<void> deletelap({
 
     required String id,
   })async {
@@ -527,10 +484,128 @@ class ShopCubit extends Cubit<ShopStates>
     });
   }
 
+   ShopLaptobModel? lapincart;
+  Future<void> getlapbyid({required String id}) async {
+
+    await FirebaseFirestore.instance
+        .collection('laptops').doc(id)
+        .get()
+        .then((value) {
+      lapincart=ShopLaptobModel.fromJson(value.data()!);
+
+      emit(findlapsuccessstate());
+    }).catchError((error) {
+      emit(findlaperrorstate());
+    });
+  }
+
   void showMaterialDialog<T>({required BuildContext context, required Widget child})
   {
     showDialog<T>(context: context,
       builder: (BuildContext context)=>child,);
   }
+
+//////////////////cart
+
+  List<String> listcart =[];
+  ShopCartModel ? cartModel;
+
+  Future<void> createCart() async
+  {
+    User? user = await FirebaseAuth.instance.currentUser;
+    ShopCartModel cartModel =ShopCartModel(
+      itemscount: 0,
+      totalprice: 0,
+      products: listcart,
+    );
+
+    await FirebaseFirestore.instance
+        .collection("cart")
+        .doc(user!.uid)
+        .set(cartModel.toMap())
+        .then((value) {})
+        .catchError((error){});
+  }
+ Future<void>getcartinfo()async {
+   User? user = await FirebaseAuth.instance.currentUser;
+   await FirebaseFirestore.instance
+       .collection("cart")
+       .doc(user!.uid)
+       .get()
+   .then((value) {
+     currentcart=ShopCartModel.fromJson(value.data()!);
+   }).catchError((error){
+     print(error.toString());
+     Fluttertoast.showToast(
+       msg:"Error Occurred",
+       toastLength: Toast.LENGTH_LONG,
+       gravity: ToastGravity.BOTTOM,
+       timeInSecForIosWeb: 5,
+       backgroundColor: Colors.red,
+       textColor: Colors.white,
+       fontSize: 16,
+
+     );
+   });
+ }
+
+  Future<void> addToCart({required String laptobId ,required int lapprice}) async
+  {
+    emit(ShopAddToCartloadState());
+    await getcartinfo();
+    currentcart!.products!.add(laptobId);
+    User? user = await FirebaseAuth.instance.currentUser;
+    await FirebaseFirestore.instance
+        .collection("cart")
+        .doc(user!.uid)
+        .update({
+    "itemscount" : currentcart!.itemscount!+1,
+    "totalprice" :  currentcart!.totalprice!+lapprice,
+    "products" :currentcart!.products! ,
+    })
+        .then((value) {
+      emit(ShopAddToCartSuccessState());
+
+    })
+        .catchError((error){
+      emit(ShopAddToCartErrorState());
+    });
+  }
+   List<ShopLaptobModel> itemsincart=[];
+  Future<void>getcart()async {
+    emit(getcartload());
+    User? user = await FirebaseAuth.instance.currentUser;
+    await FirebaseFirestore.instance
+        .collection("cart")
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      currentcart=ShopCartModel.fromJson(value.data()!);
+      if(currentcart!.itemscount! >0){
+        currentcart!.products!.forEach((element) async {
+          await getlapbyid(id: element);
+          itemsincart.add(lapincart!);
+
+        });
+      }
+      emit(getcartsuccess());
+
+    }).catchError((error){
+      print(error.toString());
+      Fluttertoast.showToast(
+        msg:"Error Occurred",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 5,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16,
+
+      );
+      emit(getcarterror());
+    });
+
+  }
+
 
 }

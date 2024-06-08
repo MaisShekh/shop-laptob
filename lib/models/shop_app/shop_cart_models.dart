@@ -1,34 +1,32 @@
 class ShopCartModel {
-  int  ? numberOfItem;
-  int  ? totalPrice;
-  String  ? cartId;
-  List<String> ? laptobId ;
+  int  ? itemscount;
+  int? totalprice;
+
+  List<dynamic> ? products ;
 
 
   ShopCartModel({
-    required this.numberOfItem,
-    required this.totalPrice,
-    required this.cartId,
-    required this.laptobId,
+    required this.itemscount,
+    required this.totalprice,
+    required this.products,
 
   });
 
   ShopCartModel.fromJson(Map<dynamic, dynamic> json)
   {
-    numberOfItem = json["numberOfItem"];
-    totalPrice = json["totalPrice"];
-    cartId = json["cartId"];
-    laptobId = json["laptobId"];
+    itemscount = json["itemscount"];
+    totalprice = json["totalprice"];
+    products = json["products"];
   }
 
   Map<String ,dynamic> toMap()
   {
     return
       {
-        'numberOfItem':numberOfItem,
-        'totalPrice':totalPrice,
-        'cartId':cartId,
-        'laptobId':laptobId,
+        'itemscount':itemscount,
+        'totalprice':totalprice,
+
+        'products':products,
 
 
       };

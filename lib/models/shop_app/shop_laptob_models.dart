@@ -1,6 +1,6 @@
 class ShopLaptobModel {
   String ? name;
-  double ? price;
+  int ? price;
   String ? ram;
   String ? description;
   String ? image;
