@@ -5,6 +5,7 @@ import 'package:untitled/layout/shop_laptobs_app/cubit/states.dart';
 
 import '../../../shared/components/components.dart';
 import '../shop_login/shop_login_screen.dart';
+import 'laptops.dart';
 class dashboardadmin extends StatelessWidget {
   const dashboardadmin({super.key});
 
@@ -44,27 +45,7 @@ class dashboardadmin extends StatelessWidget {
                 )
               ],
             ),
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex:cubit.currentIndex ,
-              selectedItemColor: Colors.black,
-              onTap: (index) {
-                cubit.changeBottomNavBar(index);
-
-              },
-              items: [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.laptop_windows_sharp),
-                  label: "Laptops",
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.groups),
-                  label: "Users",
-                ),
-
-              ],
-
-            ),
-            body:cubit.dashscreen[cubit.currentIndex] ,
+            body:Laptops(),
           );
         }
     );

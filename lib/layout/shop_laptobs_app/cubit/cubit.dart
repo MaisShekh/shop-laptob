@@ -484,6 +484,32 @@ class ShopCubit extends Cubit<ShopStates>
     });
   }
 
+  Future<void> deletefromcart({
+    required String itemid,
+
+  })async {
+    emit(deletelaploadingstate());
+    User? user = await FirebaseAuth.instance.currentUser;
+var snapshot=await FirebaseFirestore.instance.collection("laptops").doc(itemid).get();
+    int itemprice=snapshot.get("price");
+    await FirebaseFirestore.instance.collection('cart').doc(user!.uid)
+        .update(
+      {
+        "products":FieldValue.arrayRemove([itemid]),
+        "itemscount":FieldValue.increment(-1),
+        "totalprice":FieldValue.increment(-itemprice),
+
+      }
+    ).then((value) async {
+      await getcart();
+      emit(deletelapsuccessstate());
+      Fluttertoast.showToast(msg: 'delete success');
+    }).catchError((error){
+      emit(deletelaperrorstate());
+      Fluttertoast.showToast(msg: 'error delete');
+    });
+  }
+
    ShopLaptobModel? lapincart;
   Future<void> getlapbyid({required String id}) async {
 
@@ -574,6 +600,7 @@ class ShopCubit extends Cubit<ShopStates>
    List<ShopLaptobModel> itemsincart=[];
   Future<void>getcart()async {
     emit(getcartload());
+    itemsincart=[];
     User? user = await FirebaseAuth.instance.currentUser;
     await FirebaseFirestore.instance
         .collection("cart")
